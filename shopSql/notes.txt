@@ -1,0 +1,18 @@
+console.log("Starting app...")
+const express = require('express')
+
+const app = express() //express is a middleware
+
+app.use((req, resp, next) => {
+    console.log('In middle ware...')
+    next()
+} )
+
+
+app.use((req, resp, next) => {
+    console.log('In another middle ware...')
+    resp.send('Hello from out app')
+} )
+
+put more specific routes first
+-> example /users before /users/add or /
