@@ -11,7 +11,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res) => {
     const {title, imageUrl, price, description} = req.body
-    const product = new Product(title, price, description, imageUrl)
+    const product = new Product(title, price, description, imageUrl, null, req.user._id)
     product
         .save()
         .then(result => {
@@ -26,7 +26,7 @@ exports.getEditProduct = (req, res, next) => {
         res.redirect('/')
     }
     const {productId} = req.params
-    req.user.getProducts({where: {id: productId}})
+    Product.findById(productId)
         .then(product => {
             if (!product) {
                 return res.redirect('/')
@@ -43,8 +43,6 @@ exports.getEditProduct = (req, res, next) => {
 }
 
 exports.postEditProduct = (req, res, next) => {
-    console.log("Editing products")
-    console.log(req.body)
     const {productId, title, price, imageUrl, description} = req.body
     const product = new Product(title, price, description, imageUrl, productId)
     product.save()

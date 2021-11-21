@@ -1,13 +1,14 @@
-const getDb = require('../util/database');
+const getDb = require('../util/database').getDb;
 const mongodb = require('mongodb')
 
 class Product {
-    constructor(title, price, description, imageUrl, id) {
+    constructor(title, price, description, imageUrl, id, userId) {
         this.title = title
         this.price = price
         this.description = description
         this.imageUrl = imageUrl
         this._id = id ? new mongodb.ObjectId(id) : null
+        this.userId = userId
     }
 
     save(){
@@ -31,6 +32,7 @@ class Product {
 
     static fetchAll(){
         const db = getDb()
+        console.log("DB IN PRODUCTS IS ", db)
         return db.collection('products')
             .find()
             .toArray()
@@ -43,7 +45,7 @@ class Product {
 
     static findById(productId){
         const db = getDb()
-        db.collection('products')
+        return db.collection('products')
             .find({_id: new mongodb.ObjectId(productId)})
             .next()
             .then(product => {
@@ -55,8 +57,8 @@ class Product {
 
     static deleteById(productId){
         const db = getDb()
-        db.collection('products')
-            .deleteOne({id: new mongodb.ObjectId(productId)})
+        return db.collection('products')
+            .deleteOne({_id: new mongodb.ObjectId(productId)})
             .then(result => {
                 return result
             })

@@ -7,12 +7,11 @@ const mongoConnect = (callback) => {
         .then(client => {
             console.log("Setting DB...")
             _db = client.db() //takes a database parameter db('test')
-            callback()
-            console.log("Connected...")
+            console.log("DB IS ", _db)
+            return callback()
         })
         .catch(err => {
             console.error("error connecting", err)
-            // throw err
         })
 }
 
@@ -25,6 +24,5 @@ const getDb = () => {
 
 }
 
-module.exports = mongoConnect
-module.getDb = getDb
+module.exports = {mongoConnect, getDb}
 
