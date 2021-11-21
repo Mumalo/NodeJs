@@ -46,22 +46,14 @@ exports.postEditProduct = (req, res, next) => {
     console.log("Editing products")
     console.log(req.body)
     const {productId, title, price, imageUrl, description} = req.body
-    console.log(productId)
-    Product.findById(productId)
-        .then(product => {
-            product.title = title
-            product.price = price
-            product.imageUrl = imageUrl
-            product.description = description
-            return product.save()
-        })
-        .then(result => {
+    const product = new Product(title, price, description, imageUrl, productId)
+    product.save()
+        .then(() => {
             console.log("Updated Product")
             res.redirect('/admin/products')
         })
-        .catch(err => {
-            console.log(err)
-        })
+        .catch(err => console.log(err))
+
 }
 
 exports.getProducts = (req, res, next) => {
@@ -80,12 +72,10 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const {productId} = req.body
-    Product.findById(productId).then(product => {
-        return product.destroy()
-    }).then(result => {
-        console.log("Deleted product")
+    Product.deleteById(productId).then(() => {
         res.redirect('/')
     }).catch(err => {
+        console.log("Error deleting...", err)
         console.log(res.redirect('/'))
     })
 

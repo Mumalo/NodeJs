@@ -7,7 +7,7 @@ class Product {
         this.price = price
         this.description = description
         this.imageUrl = imageUrl
-        this._id = id
+        this._id = id ? new mongodb.ObjectId(id) : null
     }
 
     save(){
@@ -16,7 +16,7 @@ class Product {
         if (this._id){
             dbOperation = db
                 .collection('products')
-                .updateOne({_id: new mongodb.ObjectId(this._id)}, {$set: this})
+                .updateOne({_id: this._id}, {$set: this})
         } else {
             dbOperation = db
                 .collection('products')
@@ -43,12 +43,22 @@ class Product {
 
     static findById(productId){
         const db = getDb()
-        return db.collection('products')
+        db.collection('products')
             .find({_id: new mongodb.ObjectId(productId)})
             .next()
             .then(product => {
                 console.log(product)
                 return product;
+            })
+            .catch(err => console.log(err))
+    }
+
+    static deleteById(productId){
+        const db = getDb()
+        db.collection('products')
+            .deleteOne({id: new mongodb.ObjectId(productId)})
+            .then(result => {
+                return result
             })
             .catch(err => console.log(err))
     }
