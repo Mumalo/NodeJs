@@ -11,13 +11,18 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res) => {
     const {title, imageUrl, price, description} = req.body
-    const product = new Product(title, price, description, imageUrl, null, req.user._id)
+    const product = new Product({
+        title,
+        imageUrl,
+        price,
+        description,
+        userId: req.user //picks id from the object. You can use req.user._id
+    });
     product
         .save()
         .then(result => {
-            console.log("Created Product", result)
             res.redirect('/admin/products')
-        })
+        }).catch(err => console.log(err))
 }
 
 exports.getEditProduct = (req, res, next) => {
@@ -44,18 +49,29 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
     const {productId, title, price, imageUrl, description} = req.body
-    const product = new Product(title, price, description, imageUrl, productId)
-    product.save()
-        .then(() => {
-            console.log("Updated Product")
-            res.redirect('/admin/products')
-        })
-        .catch(err => console.log(err))
+    const product = new Product({
+        title,
+        price,
+        description,
+        imageUrl,
+        productId
+    });
 
+    Product.findById(productId).then((product) => {
+        product.title = title
+        product.price = price
+        product.description = description
+        product.imageUrl = imageUrl
+        return product.save()
+    }).then(() => {
+        console.log("Updated Product")
+        res.redirect('/admin/products')
+    })
 }
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll()
+    Product.find()
+        //.populate('userId') //You can point at nested paths
         .then((products) => {
             res.render('admin/products',
                 {
@@ -63,18 +79,18 @@ exports.getProducts = (req, res, next) => {
                     pageTitle: 'Admin Products',
                     path: '/admin/products',
                 })
-        }).catch(err => {
-        console.log(err)
-    })
+        }).catch(err => {console.log(err)})
 }
 
 exports.postDeleteProduct = (req, res, next) => {
     const {productId} = req.body
-    Product.deleteById(productId).then(() => {
-        res.redirect('/')
-    }).catch(err => {
-        console.log("Error deleting...", err)
-        console.log(res.redirect('/'))
-    })
+    Product
+        .findByIdAndRemove(productId)
+        .then(() => {
+            res.redirect('/')
+        }).catch(err => {
+            console.log(err)
+            console.log(res.redirect('/'))
+    });
 
 }
