@@ -5,7 +5,8 @@ exports.getAddProduct = (req, res, next) => {
         {
             pageTitle: 'Add Product',
             path: '/admin/add-product',
-            editing: false
+            editing: false,
+            isAuthenticated: req.session.isLoggedIn
         });
 };
 
@@ -16,7 +17,8 @@ exports.postAddProduct = (req, res) => {
         imageUrl,
         price,
         description,
-        userId: req.user //picks id from the object. You can use req.user._id
+        userId: req.user, //picks id from the object. You can use req.user._id
+        isAuthenticated: req.session.isLoggedIn
     });
     product
         .save()
@@ -36,27 +38,20 @@ exports.getEditProduct = (req, res, next) => {
             if (!product) {
                 return res.redirect('/')
             }
-
             res.render('admin/edit-product',
                 {
                     pageTitle: 'Edit Product',
                     path: '/admin/edit-product',
                     editing: editMode,
-                    product
+                    product,
+                    isAuthenticated: req.session.isLoggedIn
                 });
         })
 }
 
 exports.postEditProduct = (req, res, next) => {
+    console.log(req.body)
     const {productId, title, price, imageUrl, description} = req.body
-    const product = new Product({
-        title,
-        price,
-        description,
-        imageUrl,
-        productId
-    });
-
     Product.findById(productId).then((product) => {
         product.title = title
         product.price = price
@@ -78,6 +73,7 @@ exports.getProducts = (req, res, next) => {
                     prods: products,
                     pageTitle: 'Admin Products',
                     path: '/admin/products',
+                    isAuthenticated: req.session.isLoggedIn
                 })
         }).catch(err => {console.log(err)})
 }
