@@ -19,3 +19,7 @@ put more specific routes first
 
 Cart and CartItem deleted. We want to use an embedded document on the user object to store the cart
 Since changes to a cart for a particular user will occur in few places
+
+
+What are asynchronous requests
+

@@ -3,26 +3,29 @@ const express = require('express')
 
 const router = express.Router()
 const shopController = require('../controllers/shop')
+const isAuth = require('../middleware/is-auth')
 
 router.get('/', shopController.getIndex)
 
 router.get('/products', shopController.getProducts)
 
-router.get('/products/delete', shopController.getProducts) //put more specific routes first
+router.get('/products/delete', isAuth, shopController.getProducts) //put more specific routes first
 
 router.get('/products/:productId', shopController.getProduct)
 
-router.get('/cart', shopController.getCart)
+router.get('/cart', isAuth, shopController.getCart)
 
-router.post('/cart/delete-item', shopController.postCartDeleteProduct)
+router.post('/cart/delete-item', isAuth, shopController.postCartDeleteProduct)
 
-router.post('/cart', shopController.postCart)
+router.post('/cart', isAuth, shopController.postCart)
 
-router.get('/checkout', shopController.getCheckout)
+router.get('/checkout', isAuth, shopController.getCheckout)
 
-router.get('/orders', shopController.getOrders)
+router.get('/orders', isAuth, shopController.getOrders)
 
-router.post('/post-order', shopController.postOrder)
+router.post('/create-order', isAuth, shopController.postOrder)
+
+router.get('/orders/:orderId', isAuth, shopController.getInvoice)
 
 
 module.exports = router

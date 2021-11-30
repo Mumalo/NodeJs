@@ -1,24 +1,25 @@
 const mongoose = require('mongoose')
-const mongodb = require('mongodb')
 
 const Schema = mongoose.Schema
 const Order = require('../models/order')
 
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
     email: {
         type: String,
         required: true
+    },
+    password: {
+        type: String,
+        required: true,
     },
     cart: {
         items: [{
             productId: {type: Schema.Types.ObjectId, ref: 'Product', required: true},
             quantity: {type: Number, required: true}
         }]
-    }
+    },
+    resetToken: String,
+    resetTokenExpiration: Date
 })
 
 //dont use arrow functions here because of the this keyword
