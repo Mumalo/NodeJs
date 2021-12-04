@@ -67,6 +67,7 @@ app.use(flash())
 
 app.use((req, res, next) => {
     if (!req.session.user) {
+        console.log("No current user available...")
         return next()
     }
 

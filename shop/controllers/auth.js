@@ -35,7 +35,7 @@ exports.postLogin = (req, res, next) => {
             if (!user){
                 console.log("User not found...")
                 req.flash('error', 'User not found.')
-                return res.redirect('/login', {
+                return res.status(400).render('/auth/login', {
                     path: '/login',
                     pageTitle: 'Login',
                     errorMessage: 'Invalid email or password',
