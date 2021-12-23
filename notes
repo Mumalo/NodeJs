@@ -1,0 +1,2 @@
+types -> number, string, any
+union types -> number | string (you have to add type guards)
